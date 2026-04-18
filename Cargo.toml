@@ -1,0 +1,14 @@
+[package]
+name = "vibeodoro"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "vibeodoro"
+path = "src/main.rs"
+
+[dependencies]
+ratatui = "0.29"
+crossterm = "0.28"
+tui-big-text = "0.7"
+notify-rust = "4"

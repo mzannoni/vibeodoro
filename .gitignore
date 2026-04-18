@@ -1,0 +1,15 @@
+# Cargo build artifacts
+/target/
+
+# Rustfmt backup files
+**/*.rs.bk
+
+# MSVC debug symbols (Windows)
+*.pdb
+
+# Environment / secrets
+.env
+.env.*
+
+# macOS metadata
+.DS_Store
