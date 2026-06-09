@@ -208,9 +208,9 @@ fn fire_alerts(cfg: &Config, ended: Phase) {
     }
     if cfg.notify {
         let (summary, body) = match ended {
-            Phase::Focus      => ("Odoro · Focus complete",  "Time for a well-earned break."),
-            Phase::ShortBreak => ("Odoro · Break over",      "Back to focus!"),
-            Phase::LongBreak  => ("Odoro · Long break over", "Starting a fresh round."),
+            Phase::Focus      => ("🍅 VibeOdoro 😎 · Focus complete",  "Time for a well-earned break."),
+            Phase::ShortBreak => ("🍅 VibeOdoro 😎 · Break over",      "Back to focus!"),
+            Phase::LongBreak  => ("🍅 VibeOdoro 😎 · Long break over", "Starting a fresh round."),
         };
         let _ = notify_rust::Notification::new()
             .summary(summary)
