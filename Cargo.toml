@@ -11,4 +11,5 @@ path = "src/main.rs"
 ratatui = "0.29"
 crossterm = "0.28"
 tui-big-text = "0.7"
-notify-rust = "4"
+notify-rust = { version = "4", features = ["images"] }
+image = { version = "0.25", default-features = false, features = ["png"] }

@@ -1,4 +1,5 @@
 use std::io::Write;
+use std::sync::OnceLock;
 use std::time::{Duration, Instant};
 
 use crossterm::event::{self, Event, KeyCode, KeyEventKind};
@@ -199,6 +200,21 @@ fn fmt_time(d: Duration) -> String {
 
 // ── Alerts ────────────────────────────────────────────────────────────────────
 
+/// App icon, embedded in the binary at compile time so notifications don't
+/// depend on any file being present on disk at runtime.
+static ICON_BYTES: &[u8] = include_bytes!("../logo/vibeodoro.png");
+
+/// Decoded notification icon, lazily built once and reused for every alert.
+fn notification_icon() -> Option<notify_rust::Image> {
+    static ICON: OnceLock<Option<notify_rust::Image>> = OnceLock::new();
+    ICON.get_or_init(|| {
+        let rgba = image::load_from_memory(ICON_BYTES).ok()?.into_rgba8();
+        let (width, height) = rgba.dimensions();
+        notify_rust::Image::from_rgba(width as i32, height as i32, rgba.into_raw()).ok()
+    })
+    .clone()
+}
+
 /// Fire the configured alerts for a phase that just ended.
 fn fire_alerts(cfg: &Config, ended: Phase) {
     if cfg.bell {
@@ -212,10 +228,12 @@ fn fire_alerts(cfg: &Config, ended: Phase) {
             Phase::ShortBreak => ("🍅 VibeOdoro 😎 · Break over",      "Back to focus!"),
             Phase::LongBreak  => ("🍅 VibeOdoro 😎 · Long break over", "Starting a fresh round."),
         };
-        let _ = notify_rust::Notification::new()
-            .summary(summary)
-            .body(body)
-            .show();
+        let mut notification = notify_rust::Notification::new();
+        notification.summary(summary).body(body);
+        if let Some(icon) = notification_icon() {
+            notification.image_data(icon);
+        }
+        let _ = notification.show();
     }
 }
 
